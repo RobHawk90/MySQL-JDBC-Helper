@@ -27,7 +27,9 @@ public class Conector {
 					conf.get("nome"));
 
 			conexao = DriverManager.getConnection(url, conf.get("usuario"), conf.get("senha"));
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 

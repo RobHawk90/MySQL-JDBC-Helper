@@ -14,7 +14,7 @@ public class LeitorDeArquivos {
 	}
 
 	public static final HashMap<String, String> leConfigBanco(String nome) {
-		HashMap<String, String> conf = new HashMap<>();
+		HashMap<String, String> conf = new HashMap<String, String>();
 
 		InputStream inputStream = LeitorDeArquivos.class.getResourceAsStream(nome);
 		BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));

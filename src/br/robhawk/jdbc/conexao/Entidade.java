@@ -20,7 +20,7 @@ public abstract class Entidade<T> extends Dao {
 	public abstract T extrai(ResultSet rs);
 
 	public List<T> listaResultados(String sql, Object... filtros) {
-		List<T> objetos = new ArrayList<>();
+		List<T> objetos = new ArrayList<T>();
 
 		try {
 			PreparedStatement ps = prepara(sql, filtros);

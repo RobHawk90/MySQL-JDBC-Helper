@@ -75,8 +75,8 @@ public class Dao {
 
 		// parâmetros para a criação do insert
 		String tabela = getNomeTabela(classe);
-		List<String> nomesCampos = new ArrayList<>();
-		List<Object> valoresCampos = new ArrayList<>();
+		List<String> nomesCampos = new ArrayList<String>();
+		List<Object> valoresCampos = new ArrayList<Object>();
 		Field campoId = null;
 
 		// obtém os metadados para extraír os parâmetros
@@ -116,8 +116,8 @@ public class Dao {
 
 		// parâmetros para a criação do insert
 		String tabela = getNomeTabela(classe);
-		List<String> nomesCampos = new ArrayList<>();
-		List<Object> valoresCampos = new ArrayList<>();
+		List<String> nomesCampos = new ArrayList<String>();
+		List<Object> valoresCampos = new ArrayList<Object>();
 
 		// obtém os metadados para extraír os parâmetros
 		Field[] campos = classe.getDeclaredFields();
@@ -192,7 +192,11 @@ public class Dao {
 
 				return objeto;
 			}
-		} catch (SQLException | InstantiationException | IllegalAccessException e) {
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 
@@ -201,7 +205,7 @@ public class Dao {
 
 	// TODO refatorar isto
 	public <T> List<T> listaResultados(Class<T> tipoClasse) {
-		List<T> objetos = new ArrayList<>();
+		List<T> objetos = new ArrayList<T>();
 
 		Field[] campos = tipoClasse.getDeclaredFields();
 		Field.setAccessible(campos, true);
@@ -224,13 +228,17 @@ public class Dao {
 
 				objetos.add(objeto);
 			}
-		} catch (SQLException | InstantiationException | IllegalAccessException e) {
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 
 		return objetos;
 	}
-	
+
 	/**
 	 * Constrói o SQL com os valores, previnindo o SQL Injection
 	 * 
@@ -344,7 +352,9 @@ public class Dao {
 
 		try {
 			campoId.set(objeto, getIdGerado());
-		} catch (IllegalArgumentException | IllegalAccessException e) {
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
@@ -418,10 +428,13 @@ public class Dao {
 	private <T> Object extraiValor(Field campo, T objeto) {
 		try {
 			return campo.get(objeto);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
+		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-			return null;
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
+
+		return null;
 	}
 
 }
