@@ -257,7 +257,7 @@ public class Dao {
 		for (int i = 0; i < valores.length; i++)
 			ps.setObject(i + 1, valores[i]);
 
-		System.out.println(ps); // exibe SQL completo
+		//System.out.println(ps); // exibe SQL completo
 
 		return ps;
 	}
