@@ -21,7 +21,7 @@ public class Conector {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 
-			HashMap<String, String> conf = LeitorDeArquivos.leConfigBanco("config/banco.conf");
+			HashMap<String, String> conf = LeitorDeArquivos.leConfigBanco("/config/banco.conf");
 
 			String url = String.format("jdbc:mysql://%s:%s/%s", conf.get("servidor"), conf.get("porta"),
 					conf.get("nome"));
