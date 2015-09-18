@@ -25,7 +25,7 @@ public class Dao {
 	 * @param sql
 	 *            com os parâmetros '?'
 	 * @param valores
-	 *            que subistituem as '?' do sql
+	 *            que substituem as '?' do sql
 	 * @return sucesso ou falha
 	 * @throws SQLException
 	 */
@@ -42,6 +42,18 @@ public class Dao {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public ResultSet query(String sql, Object... valores) {
+		try {
+			PreparedStatement ps = prepara(sql, valores);
+
+			return ps.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	/**
@@ -257,7 +269,7 @@ public class Dao {
 		for (int i = 0; i < valores.length; i++)
 			ps.setObject(i + 1, valores[i]);
 
-		//System.out.println(ps); // exibe SQL completo
+		// System.out.println(ps); // exibe SQL completo
 
 		return ps;
 	}

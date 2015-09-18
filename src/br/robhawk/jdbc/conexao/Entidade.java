@@ -17,7 +17,17 @@ import java.util.List;
  */
 public abstract class Entidade<T> extends Dao {
 
-	public abstract T extrai(ResultSet rs);
+	public abstract T extrai(ResultSet rs) throws SQLException;
+
+	public T extraiResultado(ResultSet rs) {
+		try {
+			return extrai(rs);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	public List<T> listaResultados(String sql, Object... filtros) {
 		List<T> objetos = new ArrayList<T>();
