@@ -8,15 +8,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mysql.jdbc.Statement;
+
 import br.robhawk.jdbc.reflection.Campo;
 import br.robhawk.jdbc.reflection.Id;
 import br.robhawk.jdbc.reflection.Tabela;
 
-import com.mysql.jdbc.Statement;
-
 public class Dao {
 
 	private ResultSet rs; // guarda as PK geradas nos inserts
+	private static final boolean EXIBE_SQL = false;
 
 	/**
 	 * Executa o SQL (insert, delete, update...) com os valores, previnindo o
@@ -73,6 +74,81 @@ public class Dao {
 
 		// TODO melhorar os metodos insert e update: código repetido deve ser
 		// extraído para uma função
+	}
+
+	/**
+	 * Insere lista de objetos de uma só vez.
+	 * 
+	 * @param objetos
+	 * @return
+	 */
+	public <T> boolean insere(List<T> objetos) {
+		Class<? extends Object> classe = objetos.get(0).getClass();
+
+		// parâmetros para a criação do insert
+		String tabela = getNomeTabela(classe);
+		List<Field> camposInsert = new ArrayList<Field>();
+		List<String> nomesCampos = new ArrayList<String>();
+		Field campoId = null;
+
+		Field[] campos = classe.getDeclaredFields();
+		Field.setAccessible(campos, true);
+
+		for (Field campo : campos) {
+			if (campo.isAnnotationPresent(Id.class))
+				campoId = campo;
+			else {
+				camposInsert.add(campo);
+				nomesCampos.add(extraiNome(campo));
+			}
+		}
+
+		String sql = "INSERT INTO " + tabela + " (";
+		for (String nomeCampo : nomesCampos)
+			sql += nomeCampo + ", ";
+		sql = sql.substring(0, sql.length() - 2) + ") VALUES ";
+
+		String valuesClause = "(";
+		for (int i = 0; i < nomesCampos.size(); i++)
+			valuesClause += "?, ";
+		valuesClause = valuesClause.substring(0, valuesClause.length() - 2) + ")";
+
+		for (int i = 0; i < objetos.size(); i++)
+			sql += valuesClause + ", ";
+		sql = sql.substring(0, sql.length() - 2);
+
+		int params = 0;
+
+		try {
+			PreparedStatement ps = Conector.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+			for (T objeto : objetos)
+				for (Field campo : camposInsert)
+					ps.setObject(++params, extraiValor(campo, objeto));
+
+			if (EXIBE_SQL)
+				System.out.println(ps.toString().split(":", 1)[1]);
+
+			ps.execute();
+			ResultSet rs = ps.getGeneratedKeys();
+
+			int idsGerados = 0;
+
+			while (rs.next()) {
+				T objeto = objetos.get(idsGerados++);
+				campoId.set(objeto, rs.getInt("GENERATED_KEY"));
+			}
+
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 	/**
@@ -269,7 +345,8 @@ public class Dao {
 		for (int i = 0; i < valores.length; i++)
 			ps.setObject(i + 1, valores[i]);
 
-		// System.out.println(ps); // exibe SQL completo
+		if (EXIBE_SQL)
+			System.out.println(ps.toString().split(":", 1)[1]); // exibe SQL completo
 
 		return ps;
 	}
