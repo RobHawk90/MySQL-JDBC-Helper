@@ -26,7 +26,7 @@ public class LeitorConfiguracoesDatabase {
 	 * porta:3306<br>
 	 * nome:nome_do_banco<br>
 	 * usuario:usuario<br>
-	 * senha:senha <br>
+	 * senha:senha<br>
 	 * </code>
 	 * 
 	 * @return {@link HashMap mapa} de configurações.
@@ -40,7 +40,7 @@ public class LeitorConfiguracoesDatabase {
 
 			while ((linha = file.readLine()) != null) {
 				String[] chaveValor = linha.split(":");
-				conf.put(chaveValor[0], chaveValor[1]);
+				conf.put(chaveValor[0].trim(), chaveValor[1].trim());
 			}
 
 			file.close();
@@ -93,6 +93,9 @@ public class LeitorConfiguracoesDatabase {
 
 			if (new File(urlAlternativa).exists())
 				return urlAlternativa;
+
+			if (new File("/banco.conf").exists())
+				return "/banco.conf";
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
