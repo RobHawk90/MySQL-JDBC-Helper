@@ -17,7 +17,7 @@ import br.robhawk.jdbc.reflection.Tabela;
 public class Dao {
 
 	private ResultSet rs; // guarda as PK geradas nos inserts
-	private static final boolean EXIBE_SQL = false;
+	public static final boolean EXIBE_SQL = false;
 
 	/**
 	 * Executa o SQL (insert, delete, update...) com os valores, previnindo o
